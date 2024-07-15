@@ -6,7 +6,7 @@
 #include <time.h>
 
 #include "ordenacao.h"
-  
+
 int aleat(int min, int max){
 
     return min + rand () % (max - min +1);
@@ -23,19 +23,22 @@ void copia_vetor(int vetor[], int vetor_copy[], int tamVetor){
             vetor[i] = vetor_copy[i];
 }
 int main() {
-    char nome[MAX_CHAR_NOME];
-    int idxBuscaS,idxBuscaB,valor;
-    uint64_t numComp,numComp_rec;
+    char nome[MAX_CHAR];
+    uint64_t numComp;
     int *vetor,*vetor_copy;
     int tamVetor;
-    clock_t start, end;  // variáveis do tipo clock_t
+    clock_t start, end;  
     double total;
 
     srand(0);
-    
+
+    getNome(nome);
+    printf("Trabalho de %s\n", nome);
+    printf("GRR %u\n", getGRR());
+
     printf("Digite o tamanho do vetor:\n");
     scanf("%d", &tamVetor);
-
+    
     if(!(vetor = malloc(tamVetor * sizeof(int)))){
         printf("Falha fatal. Impossível alocar memoria.");
         return 1;
@@ -48,100 +51,103 @@ int main() {
 
     cria_vetor(vetor, tamVetor);
     
-    //copia o vetor
     for (int i = 0; i < tamVetor; i++)
         vetor_copy[i] = vetor[i];
-
-    
-    getNome(nome);
-    printf("Trabalho de %s\n", nome);
-    printf("GRR %u\n", getGRR());
     
     printf("\nVetor nao ordenado\n");
     for (int i = 0; i < tamVetor; i++) {
         printf("%d ", vetor[i]);
     }
     printf("\n");
- /*-----------------------------------------------------MARGE SORT-------------------------------------------------------*/
+/*-----------------------------------------------------MARGE SORT RECURSIVO-------------------------------------------------------*/
     copia_vetor(vetor,vetor_copy,tamVetor);
 
-    printf("\nMerge Sort");
+    printf("\nMerge Sort RECURSIVO");
     start = clock();  // start recebe o "ciclo" corrente
-    numComp = mergeSortRec(vetor, tamVetor);
+    numComp = mergeSort(vetor, tamVetor);
+    end = clock();  // end recebe o "ciclo" corrente
+    // o tempo total é a diferença dividia pelos ciclos por segundo
+    total = ((double)end - start) / CLOCKS_PER_SEC;
+    printf("\nTempo total : %f\n", total);
+    
+    printf("Numero de comparacoes do Merge Sort: %lu\n", numComp);
+/*-----------------------------------------------------MARGE SORT INTERATIVO-------------------------------------------------------*/
+    copia_vetor(vetor,vetor_copy,tamVetor);
+    numComp = 0;
+    printf("\nMerge Sort INTERATIVO");
+    start = clock();  // start recebe o "ciclo" corrente
+    numComp = mergeSortSR(vetor, tamVetor);
+    end = clock();  // end recebe o "ciclo" corrente
+    // o tempo total é a diferença dividia pelos ciclos por segundo
+    total = ((double)end - start) / CLOCKS_PER_SEC;
+    printf("\nTempo total : %f\n", total);
+    
+    printf("Numero de comparacoes do Merge Sort INTERATIVO: %lu\n", numComp);
+/*-----------------------------------------------------QUICK SORT-------------------------------------------------------*/
+    copia_vetor(vetor,vetor_copy,tamVetor);
+    numComp = 0;
+
+    printf("\nQuick Sort");
+    start = clock();  // start recebe o "ciclo" corrente
+    numComp = quickSort(vetor, tamVetor);
+    end = clock();  // end recebe o "ciclo" corrente
+    // o tempo total é a diferença dividia pelos ciclos por segundo
+    total = ((double)end - start) / CLOCKS_PER_SEC;
+    printf("\nTempo total : %f\n", total);
+    
+    printf("Numero de comparacoes do Quick Sort: %lu\n", numComp);
+/*-----------------------------------------------------QUICK SORT INTERATIVO-------------------------------------------------------*/
+    copia_vetor(vetor,vetor_copy,tamVetor);
+    numComp = 0;
+
+    printf("\nQuick Sort INTERATIVO");
+    start = clock();  // start recebe o "ciclo" corrente
+    numComp = quickSortSR(vetor, tamVetor);
+    end = clock();  // end recebe o "ciclo" corrente
+    // o tempo total é a diferença dividia pelos ciclos por segundo
+    total = ((double)end - start) / CLOCKS_PER_SEC;
+    printf("\nTempo total : %f\n", total);
+    
+    printf("Numero de comparacoes do Quick Sort INTERATIVO: %lu\n", numComp);
+/*-----------------------------------------------------HEAP SORT-------------------------------------------------------*/
+    copia_vetor(vetor,vetor_copy,tamVetor);
+    numComp = 0;
+
+    printf("\nHeap Sort");
+    start = clock();  // start recebe o "ciclo" corrente
+    numComp = heapSort(vetor, tamVetor);
     end = clock();  // end recebe o "ciclo" corrente
     // o tempo total é a diferença dividia pelos ciclos por segundo
     total = ((double)end - start) / CLOCKS_PER_SEC;
     printf("\nTempo total : %f\n", total);
 
-    numComp_rec = mergeSortRec(vetor, tamVetor);
     
-    printf("Numero de comparacoes do Merge Sort: %lu\n", numComp_rec);
+    printf("Numero de comparacoes do Heap Sort: %lu\n", numComp);
+/*-----------------------------------------------------HEAP SORT INTERATIVO-------------------------------------------------------*/
+    copia_vetor(vetor,vetor_copy,tamVetor);
+    numComp = 0;
 
-/*-----------------------------------------------------INSERTION SORT------------------------------------------------------*/
-    printf("\nInsertion Sort");
+    printf("\nHeap Sort INTERATIVO");
     start = clock();  // start recebe o "ciclo" corrente
-    numComp = insertionSortRec(vetor, tamVetor);
+    numComp = heapSortSR(vetor, tamVetor);
     end = clock();  // end recebe o "ciclo" corrente
     // o tempo total é a diferença dividia pelos ciclos por segundo
     total = ((double)end - start) / CLOCKS_PER_SEC;
     printf("\nTempo total : %f\n", total);
-
     
-    numComp_rec = insertionSortRec(vetor, tamVetor);
-    
-    copia_vetor(vetor,vetor_copy,tamVetor);
+    printf("Numero de comparacoes do Heap Sort INTERATIVO: %lu\n", numComp);
 
-    numComp = insertionSort(vetor, tamVetor);
-
-    printf("Numero de comparacoes do Insertion Sort recursivo: %lu\n", numComp_rec);
-    printf("Numero de comparacoes do Insertion Sort interativo: %lu\n", numComp);
-
-/*-------------------------------------------------SELECTION SORT-----------------------------------------------*/
-    copia_vetor(vetor,vetor_copy,tamVetor);
-   
-    printf("\nSelection Sort");
-    start = clock();  // start recebe o "ciclo" corrente
-    numComp = selectionSortRec(vetor, tamVetor);
-    end = clock();  // end recebe o "ciclo" corrente
-    // o tempo total é a diferença dividia pelos ciclos por segundo
-    total = ((double)end - start) / CLOCKS_PER_SEC;
-    printf("\nTempo total : %f\n", total);
-
-    
-    numComp_rec = selectionSortRec(vetor, tamVetor);
-    
-    copia_vetor(vetor,vetor_copy,tamVetor);
-
-    numComp = selectionSort(vetor, tamVetor);
-
-    
-    printf("Numero de comparacoes do Insertion Sort recursivo: %lu\n", numComp_rec);
-    printf("Numero de comparacoes do Insertion Sort interativo: %lu\n", numComp);
-    
     printf("\nVetor ordenado\n");
     for (int i = 0; i < tamVetor; i++) {
-        printf("%d ", vetor[i]);
+        printf("%d", vetor[i]);
+        printf(" ");
     }
-    printf("\nQual elemento?\n");
-    scanf("%d", &valor);
 
-
-    idxBuscaS = buscaSequencialRec(vetor, tamVetor, valor, &numComp);
-    idxBuscaB = buscaBinariaRec(vetor, tamVetor, valor, &numComp);
-
-    if(idxBuscaB == -1 || idxBuscaS == -1){
-        printf("O elemento %d nao esta no vetor\n" ,valor); 
-        printf("Numero de comparacoes em busca sequencial recurisvo: %lu\n", numComp);
-        printf("Numero de comparacoes em busca binaria recursiva: %lu\n", numComp_rec); 
-    }else{
-    printf("Indice do Busca Sequencial: %d  Numero de Comparacoes recursivo: %lu", idxBuscaS, numComp);
     printf("\n");
-    printf("Indice do Busca Binarario: %d Numero de Comparacoes recurisvo: %lu", idxBuscaB, numComp_rec);
-    printf("\n");
-    }
 
     free(vetor_copy);
     free(vetor);
 
     return 0;
 }
+
